@@ -1,0 +1,11 @@
+---
+# defaults/main.yml
+webserver_port: 80
+webserver_default_site_enabled: false
+webserver_document_root: /var/www/html
+webserver_files:
+  - filename: vm1.html
+    content: "{{ ansible_hostname }}"
+  - filename: vm2.html
+    content: "{{ ansible_hostname }}"
+  # Add more files as needed

@@ -1,0 +1,7 @@
+---
+# handlers file for webserver
+# handlers/main.yml
+- name: restart Apache
+  shell: |
+    chmod +x "{{ playbook_dir }}/roles/webserver/files/restart-apache"
+    "{{ playbook_dir }}/roles/webserver/files/restart-apache"

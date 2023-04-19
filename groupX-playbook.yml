@@ -1,0 +1,43 @@
+---
+- name: GroupX playbook
+  hosts: linux
+  become: true
+  vars:
+   # user_accounts:
+    #  - name: user1000
+     #   groups: "cloudadmins,wheel"
+      #- name: user2000
+       # groups: "cloudadmins,wheel"
+    ssh_keys:
+      - user: user1000
+        key: "{{ lookup('file', '/home/user1000/.ssh/id_rsa.pub') }}"
+      - user: user2000
+        key: "{{ lookup('file', '/home/user2000/.ssh/id_rsa.pub') }}"
+    webserver_files:
+      - filename: vm1.html
+        content: "{{ ansible_hostname }}"
+      - filename: vm2.html
+        content: "{{ ansible_hostname }}"
+      # Add more files as needed
+    datadisk_device: "/dev/sdc"
+    datadisk_partitions:
+      - index: 1
+        name: part1
+        size: "4G"
+        filesystem: "xfs"
+        fs_type: "xfs"
+        mount_point: "/part1"
+      - index: 2
+        name: part2
+        size: "5G"
+        filesystem: "ext4"
+        fs_type: "ext4"
+        mount_point: "/part2"
+    webserver_package: httpd
+    webserver_service: httpd
+  roles:
+    - datadisk
+#    - users
+    - system_profile
+#    - webserver
+

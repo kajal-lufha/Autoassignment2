@@ -1,0 +1,36 @@
+---
+# tasks/main.yml
+- name: Partition data disk
+  parted:
+    device: "{{ datadisk_device }}"
+    number: "{{ item.index }}"
+    state: present
+    part_start: "{{ ((item.index - 1) * 100) + 1 }}%"
+    part_end: "{{ (item.index * 100) }}%"
+    part_type: primary
+    #part_flags: []
+  loop: "{{ datadisk_partitions|default([]) }}"
+  loop_control:
+    loop_var: item
+  when: not ('force_partition' in group_names)
+
+- name: Format data disk partitions
+  filesystem:
+    fstype: "{{ item.fs_type }}"
+    dev: "{{ datadisk_device }}{{ item.index }}"
+  loop: "{{ datadisk_partitions|default([]) }}"
+  loop_control:
+    loop_var: item
+  when: not ('force_format' in group_names)
+
+- name: Mount data disk partitions
+  mount:
+    path: "{{ item.mount_point }}"
+    src: "{{ datadisk_device }}{{ item.index }}"
+    fstype: "{{ item.fs_type }}"
+    opts: defaults
+    state: mounted
+  loop: "{{ datadisk_partitions|default([]) }}"
+  loop_control:
+    loop_var: item
+

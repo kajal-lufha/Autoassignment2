@@ -1,0 +1,29 @@
+---
+# tasks/main.yml
+- name: Create group "{{ users_group_name }}"
+  group:
+    name: "{{ users_group_name }}"
+    state: present
+
+- name: Create user accounts
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.groups }}"
+    password: "{{ 'password'|password_hash('sha512') }}"
+    shell: /bin/bash
+  with_items: "{{ users_users }}"
+
+- name: Generate SSH keys for users
+  ansible.posix.ssh_keypair:
+    user: "{{ item.name }}"
+    path: "/home/{{ item.name }}/.ssh/id_rsa"
+  with_items: "{{ users_users }}"
+
+- name: Distribute SSH keys for users
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ lookup('file', '/home/' ~ item.name ~ '/.ssh/id_rsa.pub') }}"
+  with_items: "{{ users_users }}"
+
+# tasks file for users

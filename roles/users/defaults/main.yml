@@ -1,0 +1,12 @@
+---
+cloudadmins_group: cloudadmins
+
+users:
+  - name: user1000
+    group:
+      - cloudadmins
+      - wheel
+  - name: user2000
+    group:
+      - cloudadmins
+      - wheel

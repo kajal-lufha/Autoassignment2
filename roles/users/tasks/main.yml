@@ -1,0 +1,32 @@
+---
+- name: Add group cloudadmins
+  group:
+    name: cloudadmins
+    state: present
+
+- name: Add users
+  user:
+    name: "{{ item.name }}"
+    groups: "{{ item.group }}"
+    password: "{{ 'password'|password_hash('sha512') }}"
+  with_items:
+    - { name: 'user1000', group: ['cloudadmins', 'wheel'] }
+    - { name: 'user2000', group: ['cloudadmins', 'wheel'] }
+
+- name: Generate SSH keys for users
+  ansible.posix.sshkey:
+    user: "{{ item }}"
+    generate: yes
+    key_file: "/home/{{ item }}/.ssh/id_rsa"
+  with_items:
+    - 'user1000'
+    - 'user2000'
+
+- name: Distribute SSH keys for users
+  authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', '/home/{{ item }}/.ssh/id_rsa.pub') }}"
+  with_items:
+    - 'user1000'
+    - 'user2000'

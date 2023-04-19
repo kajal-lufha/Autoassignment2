@@ -1,0 +1,6 @@
+<VirtualHost *:{{ webserver_port }}>
+    DocumentRoot "{{ webserver_document_root }}"
+    ServerAdmin webmaster@localhost
+    ErrorLog "/var/log/httpd/error.log"
+    CustomLog "/var/log/httpd/access.log" combined
+</VirtualHost>

@@ -1,0 +1,10 @@
+---
+# tasks/main.yml
+- name: Append to /etc/profile
+  blockinfile:
+    path: /etc/profile
+    block: |
+      # This is a test block added by Ansible...
+      # Created by: {{ ansible_user }}
+      export TMOUT=1800
+
